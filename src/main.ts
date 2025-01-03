@@ -1,5 +1,7 @@
 import { Application, Assets, Sprite } from "pixi.js";
 
+import { initDevtools } from "@pixi/devtools";
+
 (async () => {
   // Create a new application
   const app = new Application();
@@ -10,6 +12,7 @@ import { Application, Assets, Sprite } from "pixi.js";
   // Append the application canvas to the document body
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
+  initDevtools({ app });
   // Load the bunny texture
   const texture = await Assets.load("/assets/bunny.png");
 
@@ -45,10 +48,5 @@ import { Application, Assets, Sprite } from "pixi.js";
     }
   });
   // Listen for animate update
-  app.ticker.add((time) => {
-    // Just for fun, let's rotate mr rabbit a little.
-    // * Delta is 1 if running at 100% performance *
-    // * Creates frame-independent transformation *
-    bunny.rotation += 0.05 * time.deltaTime;
-  });
+  app.ticker.add((time) => {});
 })();
