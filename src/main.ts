@@ -29,6 +29,7 @@ import { atlasData } from "./sprites/glasses";
   bunny.on("pointerdown", (e) => {
     console.log("Bunny clicked!");
   });
+  // test commiot
   bunny.eventMode = "static";
   // Center the sprite's anchor point
   bunny.anchor.set(0.5);
