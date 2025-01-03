@@ -1,6 +1,14 @@
-import { Application, Assets, Sprite } from "pixi.js";
-
+import {
+  Application,
+  Assets,
+  Sprite,
+  AnimatedSprite,
+  Spritesheet,
+  Texture,
+} from "pixi.js";
 import { initDevtools } from "@pixi/devtools";
+
+import { atlasData } from "./sprites/glasses";
 
 (async () => {
   // Create a new application
@@ -29,6 +37,19 @@ import { initDevtools } from "@pixi/devtools";
 
   // Add the bunny to the stage
   app.stage.addChild(bunny);
+
+  const animTexture = await Assets.load(atlasData.meta.image);
+
+  const spritesheet = new Spritesheet(animTexture, atlasData);
+
+  await spritesheet.parse();
+
+  const anim = new AnimatedSprite(spritesheet.animations.glass);
+
+  anim.animationSpeed = 0.05;
+
+  anim.play();
+  app.stage.addChild(anim);
 
   document.addEventListener("keydown", (e) => {
     const speed = 5;
