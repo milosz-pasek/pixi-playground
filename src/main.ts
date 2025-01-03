@@ -4,7 +4,8 @@ import {
   Sprite,
   AnimatedSprite,
   Spritesheet,
-  Texture,
+  TilingSprite,
+  DisplacementFilter,
 } from "pixi.js";
 import { initDevtools } from "@pixi/devtools";
 
@@ -29,6 +30,7 @@ import { atlasData } from "./sprites/glasses";
   bunny.on("pointerdown", (e) => {
     console.log("Bunny clicked!");
   });
+  bunny.scale.set(2)
   // test commiot
   bunny.eventMode = "static";
   // Center the sprite's anchor point
@@ -48,27 +50,51 @@ import { atlasData } from "./sprites/glasses";
   const anim = new AnimatedSprite(spritesheet.animations.glass);
 
   anim.animationSpeed = 0.05;
+  anim.loop = false
+  anim.eventMode = "static"
+  anim.on("pointerdown", (e) => {
+    console.log("Glass clicked!");
+    return anim.play();
+  })
 
-  anim.play();
+  anim.onComplete = () => {
+    anim.destroy()
+  }
   app.stage.addChild(anim);
 
+  const keysDown: Record<string, boolean> = {};
+
   document.addEventListener("keydown", (e) => {
-    const speed = 5;
-    switch (e.key) {
-      case "ArrowUp":
-        bunny.y -= speed;
-        break;
-      case "ArrowDown":
-        bunny.y += speed;
-        break;
-      case "ArrowLeft":
-        bunny.x -= speed;
-        break;
-      case "ArrowRight":
-        bunny.x += speed;
-        break;
-    }
+    keysDown[e.key] = true;
+  });
+  
+  document.addEventListener("keyup", (e) => {
+    keysDown[e.key] = false;
+  });
+  
+  app.ticker.add(() => {
+    const speed = 1;
+    if (keysDown["ArrowUp"]) bunny.y -= speed;
+    if (keysDown["ArrowDown"]) bunny.y += speed;
+    if (keysDown["ArrowLeft"]) bunny.x -= speed;
+    if (keysDown["ArrowRight"]) bunny.x += speed;
   });
   // Listen for animate update
-  app.ticker.add((time) => {});
+  // app.ticker.add((time) => {
+  //   bunny.rotation += 0.01;
+
+  // });
+
+  const displacementTexture = await Assets.load("https://pixijs.com/assets/tutorials/fish-pond/displacement_map.png");
+  const displacementTest = new Sprite({
+    texture: displacementTexture,
+    width: app.screen.width,
+    height: app.screen.height,
+});
+
+const filter = new DisplacementFilter({
+  sprite: displacementTest,
+  scale: 50,
+});
+app.stage.filters = [filter];
 })();
